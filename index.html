@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>抖音水印去除工具</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f5f5; color: #222; min-height: 100vh; padding: 24px 16px; }
+  .container { max-width: 780px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #666; margin-bottom: 20px; }
+  .card { background: #fff; border-radius: 12px; border: 1px solid #e5e5e5; padding: 20px; margin-bottom: 16px; }
+  .drop-zone {
+    border: 2px dashed #ccc; border-radius: 10px; padding: 40px 20px;
+    text-align: center; cursor: pointer; transition: background 0.15s;
+  }
+  .drop-zone:hover, .drop-zone.drag-over { background: #f0f0f0; border-color: #999; }
+  .drop-zone input { display: none; }
+  .drop-icon { font-size: 40px; margin-bottom: 8px; }
+  .drop-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .drop-sub { font-size: 13px; color: #888; }
+  .section-title { font-size: 13px; font-weight: 500; color: #555; margin-bottom: 10px; }
+  .ctrl-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+  .ctrl-group { flex: 1; min-width: 140px; }
+  .ctrl-group label { font-size: 12px; color: #666; display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .ctrl-group input[type=range] { width: 100%; accent-color: #222; }
+  .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+  .preview-box { border-radius: 8px; overflow: hidden; border: 1px solid #e5e5e5; position: relative; background: #000; }
+  .preview-box canvas { width: 100%; display: block; }
+  .preview-label { font-size: 11px; color: #888; padding: 4px 8px; text-align: center; background: #fafafa; border-top: 1px solid #eee; }
+  .mask-overlay { position: absolute; background: rgba(220,50,50,0.3); pointer-events: none; border: 1.5px solid rgba(220,50,50,0.9); }
+  .btn { display: inline-flex; align-items: center; gap: 6px; background: #222; color: #fff; border: none; border-radius: 8px; padding: 10px 22px; font-size: 14px; font-weight: 500; cursor: pointer; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn:hover:not(:disabled) { background: #000; }
+  .progress-wrap { margin-top: 14px; display: none; }
+  .progress-bg { background: #eee; border-radius: 4px; height: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #222; width: 0%; transition: width 0.1s; border-radius: 4px; }
+  .progress-text { font-size: 12px; color: #888; margin-top: 5px; }
+  .status { font-size: 13px; color: #555; margin-top: 10px; min-height: 18px; }
+  .tip { font-size: 12px; color: #888; background: #f9f9f9; border-radius: 8px; padding: 10px 12px; margin-top: 10px; border: 1px solid #eee; line-height: 1.6; }
+  @media (max-width: 500px) { .preview-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎬 抖音水印去除工具</h1>
+  <p class="subtitle">上传视频或 GIF，自动用模糊填充遮盖右下角水印，导出无水印文件</p>
+
+  <div class="card">
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept="video/*,image/gif">
+      <div class="drop-icon">📁</div>
+      <div class="drop-title">点击或拖拽上传视频 / GIF</div>
+      <div class="drop-sub">支持 MP4、MOV、WebM、GIF 等格式</div>
+    </div>
+  </div>
+
+  <div id="controls" style="display:none;">
+    <div class="card">
+      <div class="section-title">水印遮盖区域设置（右下角）</div>
+      <div class="ctrl-row">
+        <div class="ctrl-group">
+          <label>宽度 <span id="wVal">20%</span></label>
+          <input type="range" id="maskW" min="5" max="50" step="1" value="20">
+        </div>
+        <div class="ctrl-group">
+          <label>高度 <span id="hVal">12%</span></label>
+          <input type="range" id="maskH" min="3" max="40" step="1" value="12">
+        </div>
+        <div class="ctrl-group">
+          <label>模糊强度 <span id="blurVal">18</span></label>
+          <input type="range" id="blurR" min="4" max="40" step="1" value="18">
+        </div>
+      </div>
+
+      <div class="preview-grid">
+        <div class="preview-box">
+          <canvas id="previewCanvas"></canvas>
+          <div id="maskOverlay" class="mask-overlay"></div>
+          <div class="preview-label">原始（红框=水印区域）</div>
+        </div>
+        <div class="preview-box">
+          <canvas id="resultCanvas"></canvas>
+          <div class="preview-label">处理效果预览</div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <button class="btn" id="processBtn">▶ 开始处理并导出</button>
+        <span id="fileInfo" style="font-size:12px;color:#888;"></span>
+      </div>
+
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-bg"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-text" id="progressText">准备中…</div>
+      </div>
+      <div class="status" id="status"></div>
+
+      <div class="tip">
+        💡 <strong>原理</strong>：对每一帧的右下角区域进行多次高斯模糊处理，覆盖水印文字，再重新合成视频。<br>
+        🎞️ <strong>GIF</strong>：会导出处理后的 PNG 帧序列 ZIP，可上传到 <a href="https://ezgif.com/maker" target="_blank">ezgif.com</a> 重新合成 GIF。<br>
+        🎬 <strong>视频</strong>：直接导出为 WebM/MP4 文件（建议使用 Chrome 获得最佳兼容性）。
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const controls = document.getElementById('controls');
+  const maskW = document.getElementById('maskW');
+  const maskH = document.getElementById('maskH');
+  const blurR = document.getElementById('blurR');
+  const wVal = document.getElementById('wVal');
+  const hVal = document.getElementById('hVal');
+  const blurVal = document.getElementById('blurVal');
+  const previewCanvas = document.getElementById('previewCanvas');
+  const resultCanvas = document.getElementById('resultCanvas');
+  const maskOverlay = document.getElementById('maskOverlay');
+  const processBtn = document.getElementById('processBtn');
+  const progressWrap = document.getElementById('progressWrap');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
+  const status = document.getElementById('status');
+  const fileInfo = document.getElementById('fileInfo');
+
+  let videoEl = null;
+  let isGif = false;
+  let gifFrames = [];
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => { if(fileInput.files[0]) handleFile(fileInput.files[0]); });
+  [maskW, maskH, blurR].forEach(el => el.addEventListener('input', () => { updateLabels(); updatePreview(); }));
+
+  function updateLabels() {
+    wVal.textContent = maskW.value + '%';
+    hVal.textContent = maskH.value + '%';
+    blurVal.textContent = blurR.value;
+  }
+
+  function handleFile(file) {
+    isGif = file.type === 'image/gif';
+    gifFrames = [];
+    status.textContent = '';
+    fileInfo.textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + ' MB)';
+    if (isGif) loadGif(file);
+    else loadVideo(file);
+  }
+
+  function loadVideo(file) {
+    if (videoEl) { try { videoEl.pause(); } catch(e){} }
+    videoEl = document.createElement('video');
+    videoEl.muted = true;
+    videoEl.playsInline = true;
+    videoEl.crossOrigin = 'anonymous';
+    videoEl.src = URL.createObjectURL(file);
+    videoEl.addEventListener('loadeddata', () => {
+      controls.style.display = 'block';
+      updatePreview();
+    });
+    videoEl.load();
+  }
+
+  function loadGif(file) {
+    status.textContent = 'GIF 解析中，请稍候…';
+    controls.style.display = 'none';
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/libgif/0.0.3/libgif.min.js';
+    script.onload = () => parseGifFrames(file);
+    script.onerror = () => { status.textContent = 'GIF 解析库加载失败，请检查网络，或将 GIF 转为 MP4 后处理。'; };
+    document.head.appendChild(script);
+  }
+
+  function parseGifFrames(file) {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.style.cssText = 'position:absolute;left:-9999px;visibility:hidden;';
+    document.body.appendChild(img);
+    try {
+      const sg = new SuperGif({ gif: img, auto_play: false });
+      sg.load(() => {
+        gifFrames = [];
+        const len = sg.get_length();
+        for (let i = 0; i < len; i++) {
+          sg.move_to(i);
+          const src = sg.get_canvas();
+          const fc = document.createElement('canvas');
+          fc.width = src.width; fc.height = src.height;
+          fc.getContext('2d').drawImage(src, 0, 0);
+          gifFrames.push(fc);
+        }
+        img.remove();
+        status.textContent = '✅ 已解析 ' + len + ' 帧';
+        controls.style.display = 'block';
+        updatePreview();
+      });
+    } catch(e) {
+      status.textContent = 'GIF 解析出错：' + e.message + '。建议先将 GIF 转为 MP4。';
+      img.remove();
+    }
+  }
+
+  function getFrameDimensions() {
+    if (isGif && gifFrames.length) return { w: gifFrames[0].width, h: gifFrames[0].height };
+    if (videoEl) return { w: videoEl.videoWidth || 320, h: videoEl.videoHeight || 240 };
+    return { w: 320, h: 240 };
+  }
+
+  function getMaskRect(vw, vh) {
+    const mw = Math.round(vw * parseInt(maskW.value) / 100);
+    const mh = Math.round(vh * parseInt(maskH.value) / 100);
+    return { x: vw - mw, y: vh - mh, w: mw, h: mh };
+  }
+
+  function applyWatermarkBlur(ctx, vw, vh) {
+    const r = getMaskRect(vw, vh);
+    const blur = parseInt(blurR.value);
+    // 多次模糊叠加以彻底覆盖水印
+    for (let pass = 0; pass < 3; pass++) {
+      const imgData = ctx.getImageData(0, 0, vw, vh);
+      const tmp = document.createElement('canvas');
+      tmp.width = vw; tmp.height = vh;
+      const tctx = tmp.getContext('2d');
+      tctx.putImageData(imgData, 0, 0);
+      ctx.save();
+      ctx.filter = 'blur(' + blur + 'px)';
+      ctx.beginPath();
+      ctx.rect(r.x, r.y, r.w, r.h);
+      ctx.clip();
+      ctx.drawImage(tmp, 0, 0);
+      ctx.restore();
+    }
+  }
+
+  function drawFrameProcessed(canvas, source, vw, vh) {
+    canvas.width = vw;
+    canvas.height = vh;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(source, 0, 0, vw, vh);
+    applyWatermarkBlur(ctx, vw, vh);
+  }
+
+  function updatePreview() {
+    const { w: vw, h: vh } = getFrameDimensions();
+    if (!vw || !vh) return;
+
+    if (isGif && gifFrames.length) {
+      previewCanvas.width = vw; previewCanvas.height = vh;
+      previewCanvas.getContext('2d').drawImage(gifFrames[0], 0, 0, vw, vh);
+      drawFrameProcessed(resultCanvas, gifFrames[0], vw, vh);
+      updateMaskOverlay(vw, vh);
+    } else if (videoEl) {
+      const t = videoEl.duration > 1 ? 1 : 0;
+      videoEl.currentTime = t;
+      videoEl.onseeked = () => {
+        previewCanvas.width = vw; previewCanvas.height = vh;
+        previewCanvas.getContext('2d').drawImage(videoEl, 0, 0, vw, vh);
+        drawFrameProcessed(resultCanvas, videoEl, vw, vh);
+        updateMaskOverlay(vw, vh);
+      };
+    }
+    updateMaskOverlay(vw, vh);
+  }
+
+  function updateMaskOverlay(vw, vh) {
+    const r = getMaskRect(vw, vh);
+    // Wait for layout
+    requestAnimationFrame(() => {
+      const pw = previewCanvas.offsetWidth;
+      const ph = previewCanvas.offsetHeight;
+      if (!pw || !ph) return;
+      const sx = pw / vw;
+      const sy = ph / vh;
+      maskOverlay.style.left = Math.round(r.x * sx) + 'px';
+      maskOverlay.style.top = Math.round(r.y * sy) + 'px';
+      maskOverlay.style.width = Math.round(r.w * sx) + 'px';
+      maskOverlay.style.height = Math.round(r.h * sy) + 'px';
+    });
+  }
+
+  processBtn.addEventListener('click', () => {
+    if (isGif && gifFrames.length) exportGif();
+    else if (videoEl) exportVideo();
+  });
+
+  function setProgress(pct, text) {
+    progressFill.style.width = pct + '%';
+    progressText.textContent = text;
+  }
+
+  function exportVideo() {
+    const { w: vw, h: vh } = getFrameDimensions();
+    if (!vw || !vh) { status.textContent = '视频尚未加载完成，请稍候。'; return; }
+    processBtn.disabled = true;
+    progressWrap.style.display = 'block';
+    setProgress(0, '准备录制…');
+    status.textContent = '';
+
+    const offscreen = document.createElement('canvas');
+    offscreen.width = vw; offscreen.height = vh;
+    const octx = offscreen.getContext('2d');
+
+    let stream, recorder, chunks;
+    try {
+      stream = offscreen.captureStream(30);
+      const mimes = ['video/mp4', 'video/webm;codecs=vp9', 'video/webm'];
+      const mimeType = mimes.find(m => MediaRecorder.isTypeSupported(m)) || 'video/webm';
+      recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 8000000 });
+    } catch(e) {
+      status.textContent = '❌ 浏览器不支持视频录制（建议使用 Chrome）：' + e.message;
+      processBtn.disabled = false;
+      return;
+    }
+
+    chunks = [];
+    recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+    recorder.onstop = () => {
+      const mime = recorder.mimeType;
+      const ext = mime.includes('mp4') ? 'mp4' : 'webm';
+      const blob = new Blob(chunks, { type: mime });
+      downloadBlob(blob, 'no_watermark.' + ext);
+      setProgress(100, '✅ 完成！文件已下载。');
+      processBtn.disabled = false;
+    };
+
+    const duration = videoEl.duration;
+    videoEl.currentTime = 0;
+    videoEl.muted = true;
+
+    let animId;
+    const drawLoop = () => {
+      if (videoEl.ended || videoEl.paused) {
+        cancelAnimationFrame(animId);
+        recorder.stop();
+        return;
+      }
+      octx.drawImage(videoEl, 0, 0, vw, vh);
+      applyWatermarkBlur(octx, vw, vh);
+      const pct = Math.round((videoEl.currentTime / duration) * 100);
+      setProgress(pct, '处理中… ' + pct + '% (' + videoEl.currentTime.toFixed(1) + 's / ' + duration.toFixed(1) + 's)');
+      animId = requestAnimationFrame(drawLoop);
+    };
+
+    videoEl.play().then(() => {
+      recorder.start();
+      animId = requestAnimationFrame(drawLoop);
+    });
+    videoEl.onended = () => { cancelAnimationFrame(animId); recorder.stop(); };
+  }
+
+  function exportGif() {
+    const { w: vw, h: vh } = getFrameDimensions();
+    processBtn.disabled = true;
+    progressWrap.style.display = 'block';
+    setProgress(0, '处理帧中…');
+    status.textContent = '';
+
+    const offscreen = document.createElement('canvas');
+    offscreen.width = vw; offscreen.height = vh;
+    const octx = offscreen.getContext('2d');
+    const dataURLs = [];
+
+    function processFrames(i) {
+      if (i >= gifFrames.length) {
+        buildZip(dataURLs);
+        return;
+      }
+      octx.clearRect(0, 0, vw, vh);
+      octx.drawImage(gifFrames[i], 0, 0, vw, vh);
+      applyWatermarkBlur(octx, vw, vh);
+      dataURLs.push(offscreen.toDataURL('image/png'));
+      setProgress(Math.round((i+1)/gifFrames.length*80), '处理帧 ' + (i+1) + ' / ' + gifFrames.length);
+      setTimeout(() => processFrames(i+1), 0);
+    }
+    processFrames(0);
+  }
+
+  function buildZip(dataURLs) {
+    setProgress(82, '加载打包库…');
+    if (window.JSZip) { doZip(dataURLs); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+    s.onload = () => doZip(dataURLs);
+    s.onerror = () => { status.textContent = 'JSZip 加载失败，请检查网络。'; processBtn.disabled = false; };
+    document.head.appendChild(s);
+  }
+
+  function doZip(dataURLs) {
+    setProgress(85, '打包中…');
+    const zip = new JSZip();
+    dataURLs.forEach((d, i) => {
+      zip.file('frame_' + String(i).padStart(4,'0') + '.png', d.split(',')[1], { base64: true });
+    });
+    zip.generateAsync({ type: 'blob' }, meta => setProgress(85 + Math.round(meta.percent * 0.15), '压缩中… ' + Math.round(meta.percent) + '%'))
+      .then(blob => {
+        downloadBlob(blob, 'gif_frames_no_watermark.zip');
+        setProgress(100, '✅ 完成！已导出 ' + dataURLs.length + ' 帧 PNG。');
+        status.textContent = '👉 前往 ezgif.com → "GIF Maker" → 上传 ZIP，即可重新合成 GIF。';
+        processBtn.disabled = false;
+      });
+  }
+
+  function downloadBlob(blob, name) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 1000);
+  }
+})();
+</script>
+</body>
+</html>
