@@ -17,119 +17,72 @@ h1{font-size:18px;font-weight:700;margin-bottom:3px}
 .drop-icon{font-size:36px;margin-bottom:8px}
 .drop-title{font-size:15px;font-weight:500;margin-bottom:4px}
 .drop-sub{font-size:12px;color:#8e8e93}
-/* steps */
-.steps{display:flex;gap:0;margin-bottom:14px;border-radius:10px;overflow:hidden;border:1px solid #e5e5ea}
-.step{flex:1;padding:10px 6px;text-align:center;font-size:11px;color:#8e8e93;background:#fafafa;border-right:1px solid #e5e5ea;transition:.2s}
-.step:last-child{border-right:none}
-.step.active{background:#fff;color:#1c1c1e;font-weight:600}
-.step.done{background:#e8f5e9;color:#2e7d32}
-.step .si{font-size:16px;display:block;margin-bottom:2px}
-/* controls */
 .ctrl-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .cg{flex:1;min-width:130px}
 .cg label{font-size:11px;color:#8e8e93;display:flex;justify-content:space-between;margin-bottom:3px}
 .cg input[type=range]{width:100%;accent-color:#007aff}
-/* previews */
 .prev-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
-.pbox{border-radius:8px;overflow:hidden;border:1px solid #e5e5ea;background:#000;position:relative}
-.pbox canvas,.pbox video{width:100%;display:block}
-.pbox video{max-height:200px;object-fit:contain}
+.pbox{border-radius:8px;overflow:hidden;border:1px solid #e5e5ea;background:#111;position:relative}
+.pbox canvas{width:100%;display:block}
 .plabel{font-size:10px;color:#8e8e93;padding:3px 8px;text-align:center;background:#fafafa;border-top:1px solid #eee}
-.mask-ov{position:absolute;background:rgba(255,59,48,.25);pointer-events:none;border:1.5px solid rgba(255,59,48,.9)}
-/* buttons */
-.btn{display:inline-flex;align-items:center;gap:6px;background:#007aff;color:#fff;border:none;border-radius:10px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;width:100%;justify-content:center;margin-top:4px}
+.mask-ov{position:absolute;background:rgba(255,59,48,.22);pointer-events:none;border:2px solid rgba(255,59,48,.9)}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;background:#007aff;color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
 .btn:disabled{opacity:.4;cursor:not-allowed}
-.btn.secondary{background:#e5e5ea;color:#1c1c1e}
-/* progress */
 .prog-wrap{margin-top:12px;display:none}
-.prog-bg{background:#e5e5ea;border-radius:4px;height:6px;overflow:hidden}
-.prog-fill{height:100%;background:#007aff;width:0%;transition:width .12s;border-radius:4px}
+.prog-bg{background:#e5e5ea;border-radius:4px;height:8px;overflow:hidden}
+.prog-fill{height:100%;background:#007aff;width:0%;transition:width .08s;border-radius:4px}
 .prog-text{font-size:11px;color:#8e8e93;margin-top:4px}
-/* log */
-.log{font-size:12px;color:#555;margin-top:10px;line-height:1.8;min-height:20px}
-.log .ok{color:#34c759}
-.log .err{color:#ff3b30}
-.log .warn{color:#ff9500}
-/* tip */
-.tip{font-size:12px;color:#8e8e93;background:#f9f9f9;border-radius:8px;padding:10px;margin-top:10px;border:1px solid #eee;line-height:1.7}
-/* result */
-.result-box{display:none;margin-top:12px;padding:14px;background:#e8f5e9;border-radius:10px;border:1px solid #a5d6a7}
-.result-box .rtitle{font-size:14px;font-weight:600;color:#2e7d32;margin-bottom:6px}
-.result-box .rsub{font-size:12px;color:#555;line-height:1.7}
+.logbox{font-size:12px;line-height:1.9;margin-top:10px;min-height:16px}
+.logbox .ok{color:#34c759}.logbox .err{color:#ff3b30}.logbox .warn{color:#ff9500}.logbox .info{color:#8e8e93}
+.result{display:none;margin-top:12px;padding:14px;background:#e8f5e9;border-radius:10px;border:1px solid #a5d6a7}
+.result .rt{font-size:14px;font-weight:600;color:#2e7d32;margin-bottom:6px}
+.result .rs{font-size:12px;color:#555;line-height:1.7}
 .dl-btn{display:inline-flex;align-items:center;gap:6px;background:#34c759;color:#fff;border:none;border-radius:10px;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;margin-top:10px;text-decoration:none}
+.tip{font-size:12px;color:#8e8e93;background:#f9f9f9;border-radius:8px;padding:10px;margin-top:10px;border:1px solid #eee;line-height:1.7}
 @media(max-width:480px){.prev-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>🎬 抖音动图水印去除</h1>
-  <p class="sub">专为抖音动态照片（Motion Photo）设计 · 提取内嵌视频 · 去除水印 · 输出 MP4</p>
+  <p class="sub">上传抖音动态 JPEG · 自动提取内嵌视频 · 去除水印 · 输出动图</p>
 
-  <div class="steps">
-    <div class="step active" id="s1"><span class="si">📂</span>上传文件</div>
-    <div class="step" id="s2"><span class="si">🔍</span>提取视频</div>
-    <div class="step" id="s3"><span class="si">⚙️</span>设置区域</div>
-    <div class="step" id="s4"><span class="si">✅</span>导出完成</div>
-  </div>
-
-  <div class="card" id="uploadCard">
+  <div class="card">
     <div class="drop" id="dropZone">
       <input type="file" id="fileInput" accept="image/jpeg,image/jpg,.jpg,.jpeg,video/*,image/gif">
       <div class="drop-icon">📷</div>
-      <div class="drop-title">上传抖音动态图片</div>
-      <div class="drop-sub">支持 .jpg / .jpeg 动态照片，也支持 MP4、GIF</div>
+      <div class="drop-title">点击上传抖音动态图片</div>
+      <div class="drop-sub">.jpg / .jpeg 动态照片，也支持 MP4、GIF</div>
     </div>
-    <div class="log" id="uploadLog"></div>
+    <div class="logbox" id="ulog"></div>
   </div>
 
   <div class="card" id="settingCard" style="display:none">
     <div class="ctrl-row">
-      <div class="cg">
-        <label>水印宽度 <span id="wVal">22%</span></label>
-        <input type="range" id="maskW" min="5" max="60" step="1" value="22">
-      </div>
-      <div class="cg">
-        <label>水印高度 <span id="hVal">10%</span></label>
-        <input type="range" id="maskH" min="3" max="40" step="1" value="10">
-      </div>
-      <div class="cg">
-        <label>模糊强度 <span id="blurVal">20</span></label>
-        <input type="range" id="blurR" min="6" max="50" step="1" value="20">
-      </div>
+      <div class="cg"><label>水印宽度 <span id="wV">22%</span></label><input type="range" id="mW" min="5" max="60" value="22"></div>
+      <div class="cg"><label>水印高度 <span id="hV">10%</span></label><input type="range" id="mH" min="3" max="40" value="10"></div>
+      <div class="cg"><label>模糊强度 <span id="bV">22</span></label><input type="range" id="bR" min="6" max="50" value="22"></div>
     </div>
-
     <div class="prev-grid">
-      <div class="pbox">
-        <canvas id="prevCanvas"></canvas>
-        <div id="maskOv" class="mask-ov"></div>
-        <div class="plabel">视频帧预览（红框=水印位置）</div>
-      </div>
-      <div class="pbox">
-        <canvas id="resCanvas"></canvas>
-        <div class="plabel">处理效果</div>
-      </div>
+      <div class="pbox"><canvas id="pC"></canvas><div id="mOv" class="mask-ov"></div><div class="plabel">原帧（红框=水印）</div></div>
+      <div class="pbox"><canvas id="rC"></canvas><div class="plabel">处理后效果</div></div>
     </div>
-
-    <button class="btn" id="startBtn">▶ 开始去除水印并导出 MP4</button>
-
+    <button class="btn" id="startBtn">▶ 开始处理，导出无水印动图</button>
     <div class="prog-wrap" id="progWrap">
       <div class="prog-bg"><div class="prog-fill" id="progFill"></div></div>
-      <div class="prog-text" id="progText">准备中…</div>
+      <div class="prog-text" id="progText"></div>
     </div>
-
-    <div class="log" id="processLog"></div>
-
-    <div class="result-box" id="resultBox">
-      <div class="rtitle">🎉 处理完成！</div>
-      <div class="rsub" id="resultDesc"></div>
-      <br>
-      <a class="dl-btn" id="dlBtn" download="no_watermark.mp4">⬇ 下载无水印 MP4</a>
+    <div class="logbox" id="plog"></div>
+    <div class="result" id="result">
+      <div class="rt">🎉 处理完成！</div>
+      <div class="rs" id="rDesc"></div>
+      <a class="dl-btn" id="dlBtn">⬇ 下载无水印动图</a>
     </div>
-
     <div class="tip">
-      💡 <b>说明</b>：工具从动态 JPEG 中提取内嵌的 MP4 视频，逐帧用高斯模糊覆盖右下角水印，实时录制输出新视频。<br>
-      📱 导出的 MP4 可直接在手机相册播放，也可分享到微信等平台。<br>
-      🖥 建议使用 <b>Chrome</b> 浏览器，Safari 对 MediaRecorder 支持有限。
+      💡 <b>输出格式说明</b>：<br>
+      • 抖音动态 JPEG / MP4 → 输出 <b>WebM 视频</b>（Chrome 录制最稳定）<br>
+      • 手机可直接播放 WebM；如需 MP4 可用 <a href="https://cloudconvert.com/webm-to-mp4" target="_blank">CloudConvert</a> 免费转换<br>
+      • GIF → 输出处理后的 <b>GIF</b>（需要 gifshot 库，自动加载）
     </div>
   </div>
 </div>
@@ -138,135 +91,67 @@ h1{font-size:18px;font-weight:700;margin-bottom:3px}
 (function(){
 'use strict';
 
-// ── DOM ──────────────────────────────────────────────
-const dropZone   = document.getElementById('dropZone');
-const fileInput  = document.getElementById('fileInput');
-const uploadLog  = document.getElementById('uploadLog');
-const settingCard= document.getElementById('settingCard');
-const maskW      = document.getElementById('maskW');
-const maskH      = document.getElementById('maskH');
-const blurR      = document.getElementById('blurR');
-const wVal       = document.getElementById('wVal');
-const hVal       = document.getElementById('hVal');
-const blurVal    = document.getElementById('blurVal');
-const prevCanvas = document.getElementById('prevCanvas');
-const resCanvas  = document.getElementById('resCanvas');
-const maskOv     = document.getElementById('maskOv');
-const startBtn   = document.getElementById('startBtn');
-const progWrap   = document.getElementById('progWrap');
-const progFill   = document.getElementById('progFill');
-const progText   = document.getElementById('progText');
-const processLog = document.getElementById('processLog');
-const resultBox  = document.getElementById('resultBox');
-const resultDesc = document.getElementById('resultDesc');
-const dlBtn      = document.getElementById('dlBtn');
+const $ = id => document.getElementById(id);
+const dropZone=$('dropZone'), fileInput=$('fileInput');
+const ulog=$('ulog'), plog=$('plog');
+const settingCard=$('settingCard');
+const mW=$('mW'), mH=$('mH'), bR=$('bR');
+const wV=$('wV'), hV=$('hV'), bV=$('bV');
+const pC=$('pC'), rC=$('rC'), mOv=$('mOv');
+const startBtn=$('startBtn');
+const progWrap=$('progWrap'), progFill=$('progFill'), progText=$('progText');
+const result=$('result'), rDesc=$('rDesc'), dlBtn=$('dlBtn');
 
-const steps = [null,
-  document.getElementById('s1'),
-  document.getElementById('s2'),
-  document.getElementById('s3'),
-  document.getElementById('s4')
-];
+let videoEl=null, inputType='', gifFrames=[], videoBlob=null;
 
-let videoEl  = null;
-let inputType = ''; // 'motionphoto' | 'video' | 'gif'
-let gifFrames = [];
-
-// ── 步骤高亮 ─────────────────────────────────────────
-function setStep(n){
-  steps.slice(1).forEach((s,i)=>{
-    s.className='step' + (i+1<n?' done':i+1===n?' active':'');
-  });
-}
-
-// ── 日志 ─────────────────────────────────────────────
-function log(el, msg, cls=''){
-  const sp=document.createElement('div');
-  if(cls) sp.className=cls;
-  sp.innerHTML=msg;
-  el.appendChild(sp);
-  el.scrollTop=el.scrollHeight;
-}
-function plog(msg,cls=''){log(processLog,msg,cls);}
-function ulog(msg,cls=''){uploadLog.innerHTML=''; log(uploadLog,msg,cls);}
-
-// ── 拖拽上传 ─────────────────────────────────────────
+// ── 上传 ──
 dropZone.addEventListener('click',()=>fileInput.click());
 dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('over');});
 dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('over'));
-dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
-fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileInput.files[0]);});
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('over');if(e.dataTransfer.files[0])go(e.dataTransfer.files[0]);});
+fileInput.addEventListener('change',()=>{if(fileInput.files[0])go(fileInput.files[0]);});
+[mW,mH,bR].forEach(el=>el.addEventListener('input',()=>{wV.textContent=mW.value+'%';hV.textContent=mH.value+'%';bV.textContent=bR.value;refreshPreview();}));
 
-// ── 滑块 ─────────────────────────────────────────────
-[maskW,maskH,blurR].forEach(el=>el.addEventListener('input',()=>{
-  wVal.textContent=maskW.value+'%';
-  hVal.textContent=maskH.value+'%';
-  blurVal.textContent=blurR.value;
-  updatePreview();
-}));
+function ul(msg,cls=''){const d=document.createElement('div');if(cls)d.className=cls;d.innerHTML=msg;ulog.appendChild(d);}
+function pl(msg,cls=''){const d=document.createElement('div');if(cls)d.className=cls;d.innerHTML=msg;plog.appendChild(d);}
+function prog(pct,txt){progFill.style.width=pct+'%';progText.textContent=txt;}
 
-// ── 主入口：处理上传文件 ──────────────────────────────
-function handleFile(file){
-  uploadLog.innerHTML='';
-  processLog.innerHTML='';
-  resultBox.style.display='none';
-  gifFrames=[];
-  setStep(1);
-
-  const isJpeg = /image\/jpe?g/i.test(file.type) || /\.jpe?g$/i.test(file.name);
-  const isGif  = file.type==='image/gif';
-
-  ulog('📄 文件：'+file.name+' · '+(file.size/1024).toFixed(0)+' KB');
-
-  if(isJpeg){
-    inputType='motionphoto';
-    ulog('🔍 检测到 JPEG，尝试提取内嵌动态视频…');
-    setStep(2);
-    extractMotionVideo(file);
-  } else if(isGif){
-    inputType='gif';
-    ulog('🎞 GIF 格式，加载帧数据…');
-    setStep(2);
-    loadGif(file);
-  } else {
-    inputType='video';
-    ulog('🎬 视频格式，直接加载…');
-    setStep(2);
-    loadVideoFile(file);
-  }
+// ── 主流程 ──
+function go(file){
+  ulog.innerHTML=''; plog.innerHTML=''; result.style.display='none';
+  gifFrames=[]; videoBlob=null; videoEl=null;
+  settingCard.style.display='none';
+  const isJpeg=/image\/jpe?g/i.test(file.type)||/\.jpe?g$/i.test(file.name);
+  const isGif=file.type==='image/gif';
+  ul('📄 '+file.name+' · '+(file.size/1024).toFixed(0)+' KB');
+  if(isJpeg){ inputType='motionphoto'; extractMP4(file); }
+  else if(isGif){ inputType='gif'; loadGif(file); }
+  else { inputType='video'; loadVideoBlob(new Blob([file],{type:file.type})); }
 }
 
-// ══════════════════════════════════════════════════════
-//  Motion Photo 提取逻辑
-// ══════════════════════════════════════════════════════
-function extractMotionVideo(file){
+// ══ 提取 MP4 ══
+function extractMP4(file){
+  ul('🔍 分析文件结构…','info');
   const reader=new FileReader();
-  reader.onload=function(e){
+  reader.onload=e=>{
     const buf=e.target.result;
-    const bytes=new Uint8Array(buf);
-    const fileSize=bytes.length;
+    const u8=new Uint8Array(buf);
+    const size=u8.length;
 
-    // 1. 尝试从 XMP 读取 MicroVideoOffset（最准确）
-    let videoOffset = findOffsetFromXMP(buf, fileSize);
+    // 1) XMP MicroVideoOffset
+    let start=findByXMP(buf,size);
+    // 2) ftyp magic bytes
+    if(start<0) start=findFtyp(u8);
+    // 3) JPEG EOI 后面
+    if(start<0) start=findAfterEOI(u8);
 
-    // 2. 如果 XMP 没有，搜索 ftyp box magic bytes
-    if(videoOffset<0){
-      videoOffset = findOffsetFromFtyp(bytes);
-    }
-
-    // 3. 如果还没找到，搜索 JPEG EOI (FFD9) 后面第一个有效数据
-    if(videoOffset<0){
-      videoOffset = findOffsetAfterJpegEnd(bytes);
-    }
-
-    if(videoOffset>0 && videoOffset<fileSize-100){
-      const videoBytes=bytes.slice(videoOffset);
-      ulog('✅ 找到内嵌视频，偏移 '+videoOffset+' 字节，视频大小 '+(videoBytes.length/1024).toFixed(0)+' KB','ok');
-      const blob=new Blob([videoBytes],{type:'video/mp4'});
-      loadVideoBlob(blob);
+    if(start>0 && start<size-64){
+      const vbytes=u8.slice(start);
+      ul('✅ 找到内嵌视频，起始字节='+start+'，大小='+(vbytes.length/1024).toFixed(0)+' KB','ok');
+      videoBlob=new Blob([vbytes],{type:'video/mp4'});
+      loadVideoBlob(videoBlob);
     } else {
-      // 没找到视频，当静态 JPEG 处理
-      ulog('⚠️ 未找到内嵌视频，作为静态图片处理','warn');
+      ul('⚠️ 未找到内嵌视频，按静态图片处理','warn');
       inputType='staticjpeg';
       loadStaticJpeg(file);
     }
@@ -274,88 +159,54 @@ function extractMotionVideo(file){
   reader.readAsArrayBuffer(file);
 }
 
-// 从 XMP 元数据读取 MicroVideoOffset
-function findOffsetFromXMP(buf, fileSize){
-  // 把 ArrayBuffer 转成字符串搜索 XMP 块
-  // XMP 以 "http://ns.adobe.com/xap/1.0/" 标记开头
-  const chunkSize=65536; // 只搜索前 64KB（XMP 一般在文件头部）
-  const searchLen=Math.min(chunkSize, buf.byteLength);
-  const head=new Uint8Array(buf, 0, searchLen);
-  let xmpStr='';
-  for(let i=0;i<searchLen;i++) xmpStr+=String.fromCharCode(head[i]);
-
-  // 尝试各种可能的属性名
+function findByXMP(buf,size){
+  const scan=Math.min(131072,buf.byteLength);
+  const u8=new Uint8Array(buf,0,scan);
+  let s='';for(let i=0;i<scan;i++)s+=String.fromCharCode(u8[i]);
   const patterns=[
-    /MicroVideoOffset[=:]["']?(\d+)/,
-    /GCamera:MicroVideoOffset[=:]["']?(\d+)/,
-    /MicroVideo[^O]*Offset[=:]["']?(\d+)/,
-    /MotionPhotoVideo[^=]*=[^"]*"([^"]+)"/,
+    /MicroVideoOffset\s*=\s*["']?(\d+)/,
+    /GCamera:MicroVideoOffset\s*=\s*["']?(\d+)/,
+    /microVideoOffset\s*=\s*["']?(\d+)/,
   ];
   for(const p of patterns){
-    const m=xmpStr.match(p);
-    if(m && m[1]){
-      const offset=parseInt(m[1]);
-      if(!isNaN(offset) && offset>0){
-        ulog('📋 XMP 找到 MicroVideoOffset = '+offset);
-        return fileSize - offset;
-      }
-    }
+    const m=s.match(p);
+    if(m){const off=parseInt(m[1]);if(off>0){ul('📋 XMP MicroVideoOffset='+off,'info');return size-off;}}
   }
   return -1;
 }
-
-// 搜索 MP4 ftyp box
-function findOffsetFromFtyp(bytes){
-  // "ftyp" = 0x66 0x74 0x79 0x70
-  for(let i=4;i<bytes.length-8;i++){
-    if(bytes[i]===0x66&&bytes[i+1]===0x74&&bytes[i+2]===0x79&&bytes[i+3]===0x70){
-      ulog('📋 通过 ftyp 标记找到视频偏移：'+(i-4));
+function findFtyp(u8){
+  for(let i=4;i<u8.length-8;i++){
+    if(u8[i]===0x66&&u8[i+1]===0x74&&u8[i+2]===0x79&&u8[i+3]===0x70){
+      ul('📋 ftyp 标记位于字节 '+(i-4),'info');
       return i-4;
     }
   }
   return -1;
 }
-
-// 搜索 JPEG EOI 标记 (FF D9) 后面的数据
-function findOffsetAfterJpegEnd(bytes){
-  // JPEG 从 FF D8 开始，到 FF D9 结束
-  // 动态照片在 FF D9 后面附加 MP4
-  for(let i=bytes.length-2;i>100;i--){
-    if(bytes[i]===0xFF&&bytes[i+1]===0xD9){
-      // 找到 JPEG EOI，后面如果还有数据就是视频
-      if(i+2 < bytes.length-100){
-        ulog('📋 JPEG EOI 后找到附加数据，偏移：'+(i+2));
-        return i+2;
-      }
+function findAfterEOI(u8){
+  // 从后往前找最后一个 FFD9
+  for(let i=u8.length-2;i>64;i--){
+    if(u8[i]===0xFF&&u8[i+1]===0xD9&&i+2<u8.length-64){
+      ul('📋 JPEG EOI 后附加数据，偏移='+(i+2),'info');
+      return i+2;
     }
   }
   return -1;
 }
 
-// ══════════════════════════════════════════════════════
-//  视频加载
-// ══════════════════════════════════════════════════════
+// ══ 视频加载 ══
 function loadVideoBlob(blob){
   if(videoEl){try{videoEl.pause();}catch(e){}}
   videoEl=document.createElement('video');
-  videoEl.muted=true;
-  videoEl.playsInline=true;
-  videoEl.preload='auto';
+  videoEl.muted=true; videoEl.playsInline=true; videoEl.preload='auto';
   videoEl.src=URL.createObjectURL(blob);
   videoEl.addEventListener('loadedmetadata',()=>{
-    ulog('✅ 视频加载成功：'+Math.round(videoEl.duration)+'秒 · '+videoEl.videoWidth+'×'+videoEl.videoHeight,'ok');
+    ul('✅ 视频就绪：'+videoEl.videoWidth+'×'+videoEl.videoHeight+' · '+videoEl.duration.toFixed(1)+'秒','ok');
     settingCard.style.display='block';
-    setStep(3);
-    updatePreview();
+    refreshPreview();
   });
-  videoEl.addEventListener('error',()=>{
-    ulog('❌ 视频解码失败，可能是编码格式不兼容。请尝试用手机先分享为视频再上传。','err');
-  });
+  videoEl.addEventListener('error',()=>ul('❌ 视频解码失败。请先用手机"存储为视频"后再上传。','err'));
   videoEl.load();
-}
-
-function loadVideoFile(file){
-  loadVideoBlob(new Blob([file],{type:file.type}));
 }
 
 function loadStaticJpeg(file){
@@ -365,281 +216,236 @@ function loadStaticJpeg(file){
     c.width=img.naturalWidth;c.height=img.naturalHeight;
     c.getContext('2d').drawImage(img,0,0);
     gifFrames=[c];
-    inputType='staticjpeg';
-    ulog('🖼 静态图片 '+img.naturalWidth+'×'+img.naturalHeight,'ok');
+    ul('🖼 静态图片 '+img.naturalWidth+'×'+img.naturalHeight,'ok');
     settingCard.style.display='block';
-    setStep(3);
-    updatePreview();
+    refreshPreview();
   };
   img.src=URL.createObjectURL(file);
 }
 
-// GIF 加载
 function loadGif(file){
-  const script=document.createElement('script');
-  script.src='https://cdnjs.cloudflare.com/ajax/libs/libgif/0.0.3/libgif.min.js';
-  script.onload=()=>parseGif(file);
-  script.onerror=()=>ulog('❌ GIF 库加载失败','err');
-  document.head.appendChild(script);
+  ul('⏳ 加载 GIF 库…','info');
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/libgif/0.0.3/libgif.min.js';
+  s.onload=()=>parseGif(file);
+  s.onerror=()=>ul('❌ GIF 库加载失败','err');
+  document.head.appendChild(s);
 }
-
 function parseGif(file){
   const img=new Image();
   img.src=URL.createObjectURL(file);
   img.style.cssText='position:absolute;left:-9999px';
   document.body.appendChild(img);
-  try{
-    const sg=new SuperGif({gif:img,auto_play:false});
-    sg.load(()=>{
-      gifFrames=[];
-      for(let i=0;i<sg.get_length();i++){
-        sg.move_to(i);
-        const s=sg.get_canvas();
-        const c=document.createElement('canvas');
-        c.width=s.width;c.height=s.height;
-        c.getContext('2d').drawImage(s,0,0);
-        gifFrames.push(c);
-      }
-      img.remove();
-      ulog('✅ GIF 解析完成：'+gifFrames.length+' 帧','ok');
-      settingCard.style.display='block';
-      setStep(3);
-      updatePreview();
-    });
-  }catch(e){
-    ulog('❌ GIF 解析出错：'+e.message,'err');
+  const sg=new SuperGif({gif:img,auto_play:false});
+  sg.load(()=>{
+    gifFrames=[];
+    for(let i=0;i<sg.get_length();i++){sg.move_to(i);const s=sg.get_canvas();const c=document.createElement('canvas');c.width=s.width;c.height=s.height;c.getContext('2d').drawImage(s,0,0);gifFrames.push(c);}
     img.remove();
-  }
+    ul('✅ GIF '+gifFrames.length+'帧','ok');
+    settingCard.style.display='block';
+    refreshPreview();
+  });
 }
 
-// ══════════════════════════════════════════════════════
-//  预览
-// ══════════════════════════════════════════════════════
+// ══ 预览 ══
 function getDims(){
-  if(gifFrames.length) return {w:gifFrames[0].width,h:gifFrames[0].height};
-  if(videoEl) return {w:videoEl.videoWidth||320,h:videoEl.videoHeight||240};
-  return {w:320,h:240};
+  if(gifFrames.length) return{w:gifFrames[0].width,h:gifFrames[0].height};
+  if(videoEl) return{w:videoEl.videoWidth||320,h:videoEl.videoHeight||568};
+  return{w:320,h:568};
 }
-
 function getMask(vw,vh){
-  const mw=Math.round(vw*parseInt(maskW.value)/100);
-  const mh=Math.round(vh*parseInt(maskH.value)/100);
-  return {x:vw-mw,y:vh-mh,w:mw,h:mh};
+  const mw=Math.round(vw*parseInt(mW.value)/100);
+  const mh=Math.round(vh*parseInt(mH.value)/100);
+  return{x:vw-mw,y:vh-mh,w:mw,h:mh};
 }
-
-function applyBlur(ctx,vw,vh){
-  const r=getMask(vw,vh);
-  const b=parseInt(blurR.value);
+function blur(ctx,vw,vh){
+  const r=getMask(vw,vh),b=parseInt(bR.value);
   for(let p=0;p<3;p++){
     const id=ctx.getImageData(0,0,vw,vh);
-    const tmp=document.createElement('canvas');
-    tmp.width=vw;tmp.height=vh;
-    tmp.getContext('2d').putImageData(id,0,0);
-    ctx.save();
-    ctx.filter='blur('+b+'px)';
-    ctx.beginPath();ctx.rect(r.x,r.y,r.w,r.h);ctx.clip();
-    ctx.drawImage(tmp,0,0);
-    ctx.restore();
+    const t=document.createElement('canvas');t.width=vw;t.height=vh;t.getContext('2d').putImageData(id,0,0);
+    ctx.save();ctx.filter='blur('+b+'px)';ctx.beginPath();ctx.rect(r.x,r.y,r.w,r.h);ctx.clip();ctx.drawImage(t,0,0);ctx.restore();
   }
 }
-
-function drawProcessed(canvas,src,vw,vh){
-  canvas.width=vw;canvas.height=vh;
-  const ctx=canvas.getContext('2d');
-  ctx.drawImage(src,0,0,vw,vh);
-  applyBlur(ctx,vw,vh);
+function drawProcessed(cv,src,vw,vh){cv.width=vw;cv.height=vh;const ctx=cv.getContext('2d');ctx.drawImage(src,0,0,vw,vh);blur(ctx,vw,vh);}
+function refreshPreview(){
+  const{w:vw,h:vh}=getDims();if(!vw||!vh)return;
+  const src=gifFrames.length?gifFrames[0]:videoEl;
+  if(!src)return;
+  const doIt=()=>{
+    pC.width=vw;pC.height=vh;pC.getContext('2d').drawImage(src,0,0,vw,vh);
+    drawProcessed(rC,src,vw,vh);
+    updateOv(vw,vh);
+  };
+  if(videoEl&&!gifFrames.length){
+    videoEl.currentTime=videoEl.duration>1?1:0;
+    videoEl.onseeked=doIt;
+  } else doIt();
 }
-
-function updatePreview(){
-  const {w:vw,h:vh}=getDims();
-  if(!vw||!vh) return;
-  if(gifFrames.length){
-    prevCanvas.width=vw;prevCanvas.height=vh;
-    prevCanvas.getContext('2d').drawImage(gifFrames[0],0,0,vw,vh);
-    drawProcessed(resCanvas,gifFrames[0],vw,vh);
-    updateOverlay(vw,vh);
-  } else if(videoEl){
-    const t=videoEl.duration>1?1:0;
-    videoEl.currentTime=t;
-    videoEl.onseeked=()=>{
-      prevCanvas.width=vw;prevCanvas.height=vh;
-      prevCanvas.getContext('2d').drawImage(videoEl,0,0,vw,vh);
-      drawProcessed(resCanvas,videoEl,vw,vh);
-      updateOverlay(vw,vh);
-    };
-  }
-}
-
-function updateOverlay(vw,vh){
+function updateOv(vw,vh){
   requestAnimationFrame(()=>{
-    const pw=prevCanvas.offsetWidth,ph=prevCanvas.offsetHeight;
-    if(!pw||!ph) return;
-    const r=getMask(vw,vh);
-    const sx=pw/vw,sy=ph/vh;
-    maskOv.style.cssText='left:'+Math.round(r.x*sx)+'px;top:'+Math.round(r.y*sy)+'px;width:'+Math.round(r.w*sx)+'px;height:'+Math.round(r.h*sy)+'px';
+    const pw=pC.offsetWidth,ph=pC.offsetHeight;if(!pw||!ph)return;
+    const r=getMask(vw,vh),sx=pw/vw,sy=ph/vh;
+    mOv.style.cssText='left:'+Math.round(r.x*sx)+'px;top:'+Math.round(r.y*sy)+'px;width:'+Math.round(r.w*sx)+'px;height:'+Math.round(r.h*sy)+'px';
   });
 }
 
-// ══════════════════════════════════════════════════════
-//  导出
-// ══════════════════════════════════════════════════════
+// ══ 导出 ══
 startBtn.addEventListener('click',()=>{
-  processLog.innerHTML='';
-  resultBox.style.display='none';
-  if(inputType==='staticjpeg') exportStaticJpeg();
-  else if(inputType==='gif') exportGif();
-  else exportVideo();
+  plog.innerHTML='';result.style.display='none';
+  if(inputType==='staticjpeg') doStaticJpeg();
+  else if(inputType==='gif') doGifExport();
+  else doVideoExport();
 });
 
-// 静态 JPEG
-function exportStaticJpeg(){
-  const {w:vw,h:vh}=getDims();
-  const c=document.createElement('canvas');
-  c.width=vw;c.height=vh;
-  const ctx=c.getContext('2d');
-  ctx.drawImage(gifFrames[0],0,0,vw,vh);
-  applyBlur(ctx,vw,vh);
-  c.toBlob(blob=>{
-    finishDownload(blob,'no_watermark.jpg','image/jpeg');
-    plog('✅ 静态图片处理完成','ok');
-  },'image/jpeg',0.95);
+// 静态图
+function doStaticJpeg(){
+  const{w:vw,h:vh}=getDims();
+  const c=document.createElement('canvas');c.width=vw;c.height=vh;
+  const ctx=c.getContext('2d');ctx.drawImage(gifFrames[0],0,0,vw,vh);blur(ctx,vw,vh);
+  c.toBlob(b=>finish(b,'no_watermark.jpg'),'image/jpeg',0.95);
 }
 
-// 视频录制导出
-function exportVideo(){
-  const {w:vw,h:vh}=getDims();
-  if(!vw||!vh||!videoEl){plog('❌ 视频未就绪','err');return;}
+// ══ 视频：逐帧 seek 方式（最稳定）══
+function doVideoExport(){
+  if(!videoEl){pl('❌ 视频未就绪','err');return;}
   startBtn.disabled=true;
   progWrap.style.display='block';
-  setProgress(0,'准备中…');
 
-  const off=document.createElement('canvas');
-  off.width=vw;off.height=vh;
-  const octx=off.getContext('2d');
-
-  let stream,recorder,chunks;
-  try{
-    stream=off.captureStream(30);
-    const mimes=['video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
-    const mime=mimes.find(m=>MediaRecorder.isTypeSupported(m))||'video/webm';
-    plog('📹 录制格式：'+mime);
-    recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:10000000});
-  }catch(e){
-    plog('❌ 录制初始化失败：'+e.message+'<br>请换用 Chrome 浏览器','err');
-    startBtn.disabled=false;return;
-  }
-
-  chunks=[];
-  recorder.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
-  recorder.onstop=()=>{
-    const mime=recorder.mimeType;
-    const ext=mime.includes('mp4')?'mp4':'webm';
-    const blob=new Blob(chunks,{type:mime});
-    plog('✅ 录制完成，文件大小：'+(blob.size/1024).toFixed(0)+' KB','ok');
-    finishDownload(blob,'no_watermark.'+ext,mime);
-    setProgress(100,'✅ 完成');
-    startBtn.disabled=false;
-    setStep(4);
-  };
-
+  const fps=30;
   const dur=videoEl.duration;
-  videoEl.currentTime=0;
-  videoEl.muted=true;
-  videoEl.playbackRate=1.0;
+  const totalFrames=Math.ceil(dur*fps);
+  const{w:vw,h:vh}=getDims();
 
-  let animId,started=false;
+  pl('📐 '+vw+'×'+vh+' · '+dur.toFixed(2)+'秒 · 预计'+totalFrames+'帧','info');
+  pl('⚙️ 逐帧截取中，请勿关闭页面…','info');
 
-  function drawFrame(){
-    if(!started) return;
-    octx.drawImage(videoEl,0,0,vw,vh);
-    applyBlur(octx,vw,vh);
-    const pct=Math.round((videoEl.currentTime/dur)*100);
-    setProgress(pct,'处理中… '+pct+'% ('+videoEl.currentTime.toFixed(1)+'s / '+dur.toFixed(1)+'s)');
-    if(!videoEl.ended && !videoEl.paused){
-      animId=requestAnimationFrame(drawFrame);
-    }
-  }
+  // 用 OffscreenCanvas + captureStream 录制
+  const offCV=document.createElement('canvas');
+  offCV.width=vw;offCV.height=vh;
+  const offCtx=offCV.getContext('2d');
 
-  videoEl.onseeked=null;
-  videoEl.onended=()=>{
-    cancelAnimationFrame(animId);
-    // 最后再画一帧
-    octx.drawImage(videoEl,0,0,vw,vh);
-    applyBlur(octx,vw,vh);
-    setTimeout(()=>recorder.stop(),200);
+  // 选最佳 mime
+  const mimes=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
+  const mime=mimes.find(m=>MediaRecorder.isTypeSupported(m))||'video/webm';
+  pl('🎞 录制格式：'+mime,'info');
+
+  const stream=offCV.captureStream(fps);
+  const rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:8000000});
+  const chunks=[];
+  rec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+  rec.onstop=()=>{
+    const blob=new Blob(chunks,{type:mime});
+    pl('✅ 录制完成：'+(blob.size/1024).toFixed(0)+' KB','ok');
+    prog(100,'完成！');
+    startBtn.disabled=false;
+    finish(blob,'no_watermark.webm');
   };
 
-  videoEl.play().then(()=>{
-    started=true;
-    recorder.start(100); // 每100ms收集一次数据
-    animId=requestAnimationFrame(drawFrame);
-    plog('▶ 开始录制…');
-  }).catch(e=>{
-    plog('❌ 播放失败：'+e.message,'err');
-    startBtn.disabled=false;
-  });
+  rec.start();
+
+  let frameIdx=0;
+  const interval=1/fps;
+
+  function seekNext(){
+    if(frameIdx>=totalFrames){
+      // 最后再画一帧确保结尾
+      rec.stop();
+      return;
+    }
+    const t=frameIdx*interval;
+    prog(Math.round(frameIdx/totalFrames*100),'处理帧 '+frameIdx+'/'+totalFrames+' ('+t.toFixed(2)+'s)');
+    videoEl.currentTime=Math.min(t,dur-0.001);
+    frameIdx++;
+  }
+
+  videoEl.onseeked=()=>{
+    // 把当前帧画到 offscreen canvas（加水印模糊）
+    offCtx.drawImage(videoEl,0,0,vw,vh);
+    blur(offCtx,vw,vh);
+    // 等一个 rAF 让 captureStream 捕获这帧
+    requestAnimationFrame(()=>{
+      setTimeout(seekNext, Math.round(1000/fps));
+    });
+  };
+
+  // 开始
+  seekNext();
 }
 
-// GIF 帧序列导出
-function exportGif(){
-  const {w:vw,h:vh}=getDims();
+// ══ GIF 导出 ══
+function doGifExport(){
   startBtn.disabled=true;
   progWrap.style.display='block';
-  setProgress(0,'处理帧…');
-  const off=document.createElement('canvas');
-  off.width=vw;off.height=vh;
+  const{w:vw,h:vh}=getDims();
+  const off=document.createElement('canvas');off.width=vw;off.height=vh;
   const octx=off.getContext('2d');
-  const urls=[];
+  const frames=[];
 
-  function next(i){
-    if(i>=gifFrames.length){buildZip(urls);return;}
+  function nextF(i){
+    if(i>=gifFrames.length){buildGifOrZip(frames,vw,vh);return;}
     octx.clearRect(0,0,vw,vh);
     octx.drawImage(gifFrames[i],0,0,vw,vh);
-    applyBlur(octx,vw,vh);
-    urls.push(off.toDataURL('image/png'));
-    setProgress(Math.round((i+1)/gifFrames.length*80),'处理帧 '+(i+1)+'/'+gifFrames.length);
-    setTimeout(()=>next(i+1),0);
+    blur(octx,vw,vh);
+    frames.push(off.toDataURL('image/png'));
+    prog(Math.round((i+1)/gifFrames.length*80),'处理帧 '+(i+1)+'/'+gifFrames.length);
+    setTimeout(()=>nextF(i+1),0);
   }
-  next(0);
+  nextF(0);
 }
 
-function buildZip(urls){
-  if(window.JSZip){doZip(urls);return;}
+function buildGifOrZip(frames,vw,vh){
+  // 尝试用 gifshot 生成真正的 GIF
+  prog(82,'生成 GIF…');
   const s=document.createElement('script');
-  s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-  s.onload=()=>doZip(urls);
-  s.onerror=()=>{plog('❌ JSZip 加载失败','err');startBtn.disabled=false;};
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.4.5/gifshot.min.js';
+  s.onload=()=>{
+    gifshot.createGIF({
+      images:frames,
+      gifWidth:vw,gifHeight:vh,
+      interval:0.08,numWorkers:2,
+      progressCallback:p=>prog(82+Math.round(p*18),'编码 GIF '+Math.round(p*100)+'%')
+    },obj=>{
+      if(!obj.error){
+        // base64 -> blob
+        const b64=obj.image.split(',')[1];
+        const bin=atob(b64);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+        finish(new Blob([arr],{type:'image/gif'}),'no_watermark.gif');
+        pl('✅ GIF 生成完成','ok');
+      } else {
+        pl('⚠️ GIF 生成失败，改为 ZIP 导出: '+obj.error,'warn');
+        exportZip(frames);
+      }
+      startBtn.disabled=false;
+    });
+  };
+  s.onerror=()=>exportZip(frames);
   document.head.appendChild(s);
 }
 
-function doZip(urls){
-  const zip=new JSZip();
-  urls.forEach((d,i)=>zip.file('frame_'+String(i).padStart(4,'0')+'.png',d.split(',')[1],{base64:true}));
-  zip.generateAsync({type:'blob'},m=>setProgress(80+Math.round(m.percent*.2),'压缩中…'))
-    .then(blob=>{
-      finishDownload(blob,'gif_no_watermark.zip','application/zip');
-      plog('✅ 导出 '+urls.length+' 帧 PNG<br>👉 前往 <a href="https://ezgif.com/maker" target="_blank">ezgif.com</a> 重新合成 GIF','ok');
+function exportZip(urls){
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+  s.onload=()=>{
+    const zip=new JSZip();
+    urls.forEach((d,i)=>zip.file('frame_'+String(i).padStart(4,'0')+'.png',d.split(',')[1],{base64:true}));
+    zip.generateAsync({type:'blob'}).then(b=>{
+      finish(b,'gif_frames.zip');
+      pl('📦 帧序列 ZIP 已导出，可上传到 <a href="https://ezgif.com/maker" target="_blank">ezgif.com</a> 合成 GIF','ok');
       startBtn.disabled=false;
-      setStep(4);
     });
+  };
+  document.head.appendChild(s);
 }
 
-function setProgress(pct,text){
-  progFill.style.width=pct+'%';
-  progText.textContent=text;
-}
-
-function finishDownload(blob,filename,mime){
+// ══ 下载 ══
+function finish(blob,filename){
   const url=URL.createObjectURL(blob);
-  dlBtn.href=url;
-  dlBtn.download=filename;
-  resultDesc.textContent='文件已就绪：'+filename+'（'+(blob.size/1024).toFixed(0)+' KB）· 点击下方按钮下载';
-  resultBox.style.display='block';
-  // 自动触发下载
-  const a=document.createElement('a');
-  a.href=url;a.download=filename;
-  document.body.appendChild(a);a.click();
-  setTimeout(()=>{document.body.removeChild(a);},1000);
+  dlBtn.href=url; dlBtn.download=filename;
+  rDesc.textContent=filename+' · '+(blob.size/1024).toFixed(0)+' KB';
+  result.style.display='block';
+  // 自动下载
+  const a=document.createElement('a');a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();setTimeout(()=>document.body.removeChild(a),1000);
 }
 
 })();
